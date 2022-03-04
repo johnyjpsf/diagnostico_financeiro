@@ -5,11 +5,10 @@
         <title>Questionário PEF</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <script src="node_modules/jquery/dist/jquery.min.js" charset="utf-8"></script>
-        <script src="node_modules/bootstrap/dist/js/bootstrap.min.js" charset="utf-8"></script>
-        <!-- <script src="node_modules/just-validate/dist/just-validate.production.min.js" charset="utf-8"></script> -->
+        <script src="/static/node_modules/jquery/dist/jquery.min.js" charset="utf-8"></script>
+        <script src="/static/node_modules/bootstrap/dist/js/bootstrap.min.js" charset="utf-8"></script>
 
-        <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/static/node_modules/bootstrap/dist/css/bootstrap.min.css">
         <style media="screen">
             .texto-resposta{
                 display: inline-block;
@@ -201,7 +200,7 @@
                 if (pontuacao < 80 && pontuacao >= 50) {
                     return "equilibrado"
                 }
-                if (pontuacao < 85 && pontuacao >= 0) {
+                if (pontuacao < 50 && pontuacao >= 0) {
                     return "endividado";
                 }
                 return "erro";
