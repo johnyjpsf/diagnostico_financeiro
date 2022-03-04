@@ -188,6 +188,15 @@
                 },
             ];
 
+            function get_questionario(){
+                const host = window.location.host;
+                var data;
+                $.getJSON('/questionario/PEF_ICA_01', function(result){
+                    data = result.responseJSON
+                    console.log(data)
+                });
+            }
+
             function is_email_valid(email){
                 const regexp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
                 return regexp.test(String(email).toLowerCase());
