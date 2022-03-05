@@ -15,186 +15,14 @@
             }
         </style>
         <script type="text/javascript">
-            const questoes = [
-                {"id": "q1",
-                    "question": "O que você ganha por mês é suficiente para arcar com os seus gastos?",
-                    "alternatives": [
-                        {"id" : "a",
-                            "text": "Consigo pagar as minhas contas e ainda sobra dinheiro para guardar;",
-                            "points": 10,
-                        },
-                        {"id" : "b",
-                            "text": "É suficiente, mas não sobra nada;",
-                            "points": 5,
-                        },
-                        {"id" : "c",
-                            "text": "Gasto todo o meu dinheiro e ainda uso o limite do cheque especial ou peço emprestado para parentes e amigos.",
-                            "points": 0,
-                        },
-                    ],
-                },
-                {"id": "q2",
-                    "question": "Você tem conseguido pagar as suas despesas em dia e à vista?",
-                    "alternatives": [
-                        {"id" : "a",
-                            "text": "Pago em dia, à vista e, em alguns casos, com bons descontos;",
-                            "points": 10,
-                        },
-                        {"id" : "b",
-                            "text": "Quase sempre, mas tenho que parcelar as compras de maior valor;",
-                            "points": 5,
-                        },
-                        {"id" : "c",
-                            "text": "Sempre parcelo os meus compromissos e utilizo linhas de crédito como cheque especial, cartão de crédito e crediário.",
-                            "points": 0,
-                        },
-                    ],
-                },
-                {"id": "q3",
-                    "question": "Você monta o seu orçamento financeiro mensalmente?",
-                    "alternatives": [
-                        {"id" : "a",
-                            "text": "Faço periodicamente e comparo o orçado com o realizado;",
-                            "points": 10,
-                        },
-                        {"id" : "b",
-                            "text": "Somente registro o realizado, sem analisar os gastos;",
-                            "points": 5,
-                        },
-                        {"id" : "c",
-                            "text": "Não faço o meu orçamento financeiro.",
-                            "points": 0,
-                        },
-                    ],
-                },
-                {"id": "q4",
-                    "question": "Você consegue fazer algum tipo de investimento?",
-                    "alternatives": [
-                        {"id" : "a",
-                            "text": "Utilizo mais de 10% da minha renda mensal em linhas de investimento que variam de acordo com os meus objetivos;",
-                            "points": 10,
-                        },
-                        {"id" : "b",
-                            "text": "Quando sobra dinheiro, invisto, normalmente, na poupança;",
-                            "points": 5,
-                        },
-                        {"id" : "c",
-                            "text": "Nunca sobra dinheiro para investir.",
-                            "points": 0,
-                        },
-                    ],
-                },
-                {"id": "q5",
-                    "question": "Como você planeja a sua aposentadoria?",
-                    "alternatives": [
-                        {"id" : "a",
-                            "text": "Contribuo ou não para um Sistema de Proteção Social e tenho planos alternativos por meio de investimentos em geral;",
-                            "points": 10,
-                        },
-                        {"id" : "b",
-                            "text": "Contribuo ou não para um Sistema de Proteção Social, mas não consigo poupar adequadamente para realizar planos alternativos nesse sentido;",
-                            "points": 5,
-                        },
-                        {"id" : "c",
-                            "text": "Contribuo ou não para um Sistema de Proteção Social e não tenho ideia alguma de como realizar planos alternativos nesse sentido.",
-                            "points": 0,
-                        },
-                    ],
-                },
-                {"id": "q6",
-                    "question": "O que você entende sobre ser Independente Financeiramente?",
-                    "alternatives": [
-                        {"id" : "a",
-                            "text": "Que posso trabalhar por prazer e não por necessidade;",
-                            "points": 10,
-                        },
-                        {"id" : "b",
-                            "text": "Que posso ter dinheiro para viver bem o dia a dia;",
-                            "points": 5,
-                        },
-                        {"id" : "c",
-                            "text": "Que posso aproveitar a vida intensamente e não pensar no futuro.",
-                            "points": 0,
-                        },
-                    ],
-                },
-                {"id": "q7",
-                    "question": "Você sabe quais são os seus sonhos e objetivos de curto, médio e longo prazo?",
-                    "alternatives": [
-                        {"id" : "a",
-                            "text": "Sei quais são, quanto custam e por quanto tempo terei que guardar para realizá-los;",
-                            "points": 10,
-                        },
-                        {"id" : "b",
-                            "text": "Tenho muitos e sei quanto custam, mas não sei como realizá-los;",
-                            "points": 5,
-                        },
-                        {"id" : "c",
-                            "text": "Não tenho ou, se tenho, sempre acabo deixando-os para o futuro, porque não consigo guardar dinheiro para eles.",
-                            "points": 0,
-                        },
-                    ],
-                },
-                {"id": "q8",
-                    "question": "Se um imprevisto alterasse a sua situação financeira, qual seria a sua reação?",
-                    "alternatives": [
-                        {"id" : "a",
-                            "text": "Faria um bom diagnóstico financeiro, registrando o que ganho e o que gasto, além dos meus investimentos e dívidas, se os tiverem;",
-                            "points": 10,
-                        },
-                        {"id" : "b",
-                            "text": "Cortaria despesas e gastos desnecessários;",
-                            "points": 5,
-                        },
-                        {"id" : "c",
-                            "text": "Não saberia por onde começar e teria medo de encarar a minha verdadeira situação financeira.",
-                            "points": 0,
-                        },
-                    ],
-                },
-                {"id": "q9",
-                    "question": "Se a partir de hoje você não recebesse mais a sua renda mensal, por quanto tempo você conseguiria manter seu atual padrão de vida?",
-                    "alternatives": [
-                        {"id" : "a",
-                            "text": "Conseguiria fazer tudo que faço por 5, 10 ou mais anos;",
-                            "points": 10,
-                        },
-                        {"id" : "b",
-                            "text": "Manteria meu padrão de vida por 1 a, no máximo, 4 anos;",
-                            "points": 5,
-                        },
-                        {"id" : "c",
-                            "text": "Não conseguiria me manter nem por alguns meses.",
-                            "points": 0,
-                        },
-                    ],
-                },
-                {"id": "q10",
-                    "question": "Quando você decide comprar um produto, qual é a sua atitude?",
-                    "alternatives": [
-                        {"id" : "a",
-                            "text": "Planejo uma forma de investimento para comprar à vista e com desconto;",
-                            "points": 10,
-                        },
-                        {"id" : "b",
-                            "text": "Parcelo dentro do meu orçamento;",
-                            "points": 5,
-                        },
-                        {"id" : "c",
-                            "text": "Compro e depois me preocupo como vou pagar.",
-                            "points": 0,
-                        },
-                    ],
-                },
-            ];
 
-            function get_questionario(){
-                const host = window.location.host;
-                var data;
-                $.getJSON('/questionario/PEF_ICA_01', function(result){
-                    data = result.responseJSON
-                    console.log(data)
-                });
+            function getResearshCode(){
+                return 'PEF_ICA_01';
+            }
+
+            async function get_questionario(){
+                let resultado = await $.getJSON('/questionario/' + getResearshCode());
+                return resultado;
             }
 
             function is_email_valid(email){
@@ -245,8 +73,8 @@
                 return component
             }
 
-            function fillTest(id){
-                const tag = document.getElementById(id);
+            function fillTest(questoes){
+                const tag = document.getElementById('perguntas');
 
                 questoes.forEach((item, i) => {
                     tag.appendChild(componentQuestion(item, i));
@@ -364,12 +192,19 @@
                 });
             }
 
-            function getDiagnostico(){
+            function confirm(){
                 clear_msgs();
                 if (!validate_form()) {
                     return;
                 }
+                $("#modalConfirm").modal("show")
+            }
 
+            function showResultMessage(result){
+                document.getElementById(result).setAttribute('style','display:block;')
+            }
+
+            function getDiagnostic(){
                 const id_list = [];
                 let pontuacao = 0;
 
@@ -388,17 +223,37 @@
 
                 const resultado = {
                     "email" : getEmail(),
+                    "pesquisa" : getResearshCode(),
                     "gabarito" : id_list,
-                    "pontuacao" : pontuacao,
+                    "pontuacao" : pontuacao
                 };
 
-                console.log(resultado);
-                const result_msg = calcula(resultado.pontuacao);
-                document.getElementById(result_msg).setAttribute('style','display:block;')
-                disableForm();
                 return resultado;
             }
 
+            function send() {
+                disableForm();
+                const diagnostic = getDiagnostic();
+                const result_msg = calcula(diagnostic.pontuacao);
+                showResultMessage(result_msg);
+                const json_data = JSON.stringify(diagnostic);
+                $.ajax({
+                        type: "POST",
+                        url: '/resultado',
+                        data: json_data,
+                        contentType: 'application/json',
+                        dataType: 'json',
+                        statusCode: {
+                            404: function() {
+                                console.log( "page not found" );
+                            },
+                            200: function(data) {
+                                console.log(data.responseText);
+                            }
+                        }
+                    });
+            }
+// eu@gmail.com
         </script>
     </head>
     <body>
@@ -431,7 +286,7 @@
 
                     <div id="perguntas"></div>
 
-                    <button id="submit_button" type="button" class="btn btn-primary" onclick="getDiagnostico()">Enviar</button>
+                    <button id="submit_button" type="button" class="btn btn-primary" onclick="confirm()">Enviar</button>
                 </form>
 
             </div>
@@ -518,9 +373,33 @@
             <br>
 
         </div>
+
+        <div class="modal" id="modalConfirm">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h4 class="modal-title">Gostaria de terminar o teste?</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="send()">Sim</button>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Não</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
         <script type="text/javascript">
+            var questoes;
+
             $(document).ready( function () {
-                fillTest('perguntas');
+                get_questionario().then((result)=>{
+                    fillTest(result);
+                    questoes = result;
+                })
             } );
         </script>
     </body>
