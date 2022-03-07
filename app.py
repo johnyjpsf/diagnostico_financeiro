@@ -210,6 +210,11 @@ def db_query(db_name, command, values:dict=None):
 def home():
     return render_template('index.html')
 
+@app.route('/<code>')
+def form(code:str=None):
+    if code in get_quest_codes():
+        return render_template('form.html', code)
+
 @app.route('/questionario/<code>')
 def get_questionario(code:str=None):
     questionarios = {}

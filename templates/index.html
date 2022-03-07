@@ -2,405 +2,50 @@
 <html lang="pt-br" dir="ltr">
     <head>
         <meta charset="utf-8">
-        <title>Questionário PEF</title>
+        <title>PEF ICA</title>
+
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <script src="/static/node_modules/jquery/dist/jquery.min.js" charset="utf-8"></script>
         <script src="/static/node_modules/bootstrap/dist/js/bootstrap.min.js" charset="utf-8"></script>
 
         <link rel="stylesheet" href="/static/node_modules/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/static/node_modules/@fortawesome/fontawesome-free/css/all.min.css">
+
         <style media="screen">
-            .texto-resposta{
+            .option{
+                width: 200px;
+                height: 200px;
+                border-radius: 3px;
+                border: solid 1px black;
+                margin: 5px;
+                padding: 5px;
+                background-color: #FFF;
+                font-weight: bold;
+                font-size: 16px;
+                overflow: hidden;
                 display: inline-block;
             }
         </style>
-        <script type="text/javascript">
-
-            function getResearshCode(){
-                return 'PEF_ICA_01';
-            }
-
-            async function get_questionario(){
-                let resultado = await $.getJSON('/questionario/' + getResearshCode());
-                return resultado;
-            }
-
-            function is_email_valid(email){
-                const regexp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-                return regexp.test(String(email).toLowerCase());
-            }
-
-            function calcula(pontuacao){
-                if (pontuacao <= 100 && pontuacao >= 80) {
-                    return "investidor";
-                }
-                if (pontuacao < 80 && pontuacao >= 50) {
-                    return "equilibrado"
-                }
-                if (pontuacao < 50 && pontuacao >= 0) {
-                    return "endividado";
-                }
-                return "erro";
-            }
-
-            function componentAlternative(name, element){
-                const text = `<div>
-                                <input id="${name}__${element.id}" type="radio" name="${name}" value="${element.points}" class="form-check-input" onchange="clearTag('${name}_msg')" required>
-                                <label for="${name}__${element.id}" class="form-check-label">${element.id})</label>
-                                <div class="texto-resposta">
-                                    ${element.text}
-                                </div>
-                            </div>`
-                return text
-            }
-
-            function componentQuestion(element, i){
-                const component = document.createElement("div")
-                let alternativas = ""
-                element.alternatives.forEach((item, i) => {
-                    alternativas = alternativas + componentAlternative(element.id, item)
-                });
-                const text = `<section id="${element.id}" class="card" style="margin:15px">
-                                    <div class="card-header">
-                                        <h3>${i+1}) ${element.question}</h3>
-                                    </div>
-                                    <div class="card-body">
-                                        ${alternativas}
-                                        <div id="${element.id}_msg" style="color:red;font-weight:bold;"></div>
-                                    </div>
-                                </section>`
-                component.innerHTML = text
-                return component
-            }
-
-            function fillTest(questoes){
-                const tag = document.getElementById('perguntas');
-
-                questoes.forEach((item, i) => {
-                    tag.appendChild(componentQuestion(item, i));
-                });
-            }
-
-            function getRadioValue(name){
-                const radioButtons = document.querySelectorAll(`input[name="${name}"]`);
-                let option = null;
-                for (const radioButton of radioButtons) {
-                  if (radioButton.checked) {
-                    option = radioButton.value;
-                    break;
-                  }
-                }
-                return option;
-            }
-
-            function getRadioSelectedItemId(name){
-                const radioButtons = document.querySelectorAll(`input[name="${name}"]`);
-                let option = null;
-                for (const radioButton of radioButtons) {
-                  if (radioButton.checked) {
-                    option = radioButton.id;
-                    break;
-                  }
-                }
-                return option;
-            }
-
-            function getEmail(){
-                let email = document.getElementById('email').value
-                return email
-            }
-
-            function validateEmail(){
-                clear_email_msg();
-                const email_msg = document.getElementById('email_msg');
-                let email_is_valid = false;
-                if (getEmail() === null || getEmail() == "") {
-                    email_msg.innerHTML = "E-mail é obrigatório.";
-                }else {
-                    if (!is_email_valid(getEmail())) {
-                        email_msg.innerHTML = "E-mail inválido.";
-                    }else {
-                        email_is_valid = true;
-                    }
-                }
-                return email_is_valid;
-            }
-
-            function validate_form(){
-                let email_is_valid = validateEmail();
-                let all_question_answered = true;
-
-                const question_msgs = {};
-                questoes.forEach((item, i) => {
-                    const quest_msg = document.getElementById(item.id + "_msg");
-                    question_msgs[item.id] = quest_msg;
-                });
-
-                questoes.forEach((item, i) => {
-                    const quest = getRadioValue(item.id);
-                    if (quest === null) {
-                        question_msgs[item.id].innerHTML = "Escolha uma resposta.";
-                        all_question_answered = false;
-                    }
-                });
-
-                if (email_is_valid && all_question_answered) {
-                    return true
-                }
-                return false
-
-            }
-
-            function clearTag(id){
-                const tag = document.getElementById(id);
-                tag.innerHTML = "";
-            }
-
-            function clear_email_msg(){
-                clearTag('email_msg');
-            }
-
-            function clear_msgs(){
-                clear_email_msg();
-                questoes.forEach((item, i) => {
-                    clearTag(item.id + "_msg");
-                });
-            }
-
-            function disableForm(){
-                document.getElementById('submit_button').setAttribute('disabled', true);
-
-                document.getElementById('email').setAttribute('disabled', true);
-
-                questoes.forEach((question, q) => {
-                    question.alternatives.forEach((alternative, a) => {
-                        const quest = document.getElementById(question.id+"__"+alternative.id);
-                        quest.setAttribute('disabled', true);
-                    });
-                });
-            }
-
-            function enableForm(){
-                document.getElementById('submit_button').removeAttribute('disabled');
-                document.getElementById('email').removeAttribute('disabled');
-
-                questoes.forEach((question, q) => {
-                    question.alternatives.forEach((alternative, a) => {
-                        const quest = document.getElementById(question.id+"__"+alternative.id);
-                        quest.removeAttribute('disabled');
-                    });
-                });
-            }
-
-            function confirm(){
-                clear_msgs();
-                if (!validate_form()) {
-                    return;
-                }
-                $("#modalConfirm").modal("show")
-            }
-
-            function showResultMessage(result){
-                document.getElementById(result).setAttribute('style','display:block;')
-            }
-
-            function getDiagnostic(){
-                const id_list = [];
-                let pontuacao = 0;
-
-                questoes.forEach((item, i) => {
-
-                    const resp = getRadioSelectedItemId(item.id).split("__")[1];
-                    pontuacao = pontuacao + parseInt(getRadioValue(item.id))
-
-                    id_list.push({
-                        "pergunta" : item.id,
-                        "resposta" : resp,
-                        "pontos" : getRadioValue(item.id)
-                    });
-
-                });
-
-                const resultado = {
-                    "email" : getEmail(),
-                    "pesquisa" : getResearshCode(),
-                    "gabarito" : id_list,
-                    "pontuacao" : pontuacao
-                };
-
-                return resultado;
-            }
-
-            function send() {
-                disableForm();
-                const diagnostic = getDiagnostic();
-                const result_msg = calcula(diagnostic.pontuacao);
-                showResultMessage(result_msg);
-                const json_data = JSON.stringify(diagnostic);
-                $.ajax({
-                        type: "POST",
-                        url: '/resultado',
-                        data: json_data,
-                        contentType: 'application/json',
-                        dataType: 'json',
-                        statusCode: {
-                            404: function() {
-                                console.log( "page not found" );
-                            },
-                            200: function(data) {
-                                console.log(data.responseText);
-                            }
-                        }
-                    });
-            }
-// eu@gmail.com
-        </script>
     </head>
     <body>
-        <div class="container">
+        <article class="container-fluid">
+            <header class="" style="width:100%">
 
-            <header class="mt-4 p-5 bg-primary text-white rounded text-center">
-                <h1>Instituto de Cartografia Aeronáutica</h1>
-                <h2>Programa de Educação Financeira</h2>
-                <h3>Teste de Diagnóstico Financeiro</h3>
+                <h1 style="position: relative; display:inline-block">Programa de Educação Financeira</h1>
+
+                <div style="position: absolute; display:inline-block; right:5px; top:5px;">
+                    <button type="button" name="button" class="btn btn-dark btn-sm">
+                        <i class="fa-solid fa-gear"></i>
+                    </button>
+                </div>
+
             </header>
-
-            <div class="">
-                <p>O presente teste tem por finalidade diagnosticar a saúde financeira do nosso efetivo, para que a equipe do <strong>Programa de Educação Financeira</strong> possa utilizar os dados obtidos na criação de conteúdos.</p>
-            </div>
-
-            <div class="questionario">
-
-                <form action="#" id="form" autocomplete="off">
-
-                    <section class="card" style="margin:5px;">
-                        <div class="card-header">
-                            <strong>Informe seu e-mail:</strong>
-                        </div>
-                        <div class="card-body">
-                            <input id="email" class="form-control" type="email" name="email" placeholder="seu_email@decea.mil.br" onfocus="clear_email_msg()" onchange="validateEmail()" style="padding:10px" required>
-                            <span>Seu email será mantido protegido e não será divulgado ou usado por terceiros.</span>
-                            <div id="email_msg" style="color:red;font-weight:bold;"></div>
-                        </div>
-                    </section>
-
-                    <div id="perguntas"></div>
-
-                    <button id="submit_button" type="button" class="btn btn-primary" onclick="confirm()">Enviar</button>
-                </form>
-
-            </div>
-
-            <hr>
-
-            <div class="resultados">
-
-                <div id="investidor" class="card" style="display:none">
-                    <header class="alert alert-success">
-                        Parabéns, você está no caminho certo!
-                    </header>
-                    <section>
-                        <ul>
-                            <li>É preciso poupar e investir parte do dinheiro no momento exato em que ele passa pelas suas mãos, pois é assim que você realizará os seus sonhos e objetivos, de forma efetiva.</li>
-                            <li>Direcionar o dinheiro guardado a um objetivo definido é o segredo para que ele se realize.</li>
-                            <li>Respeite e invista de forma inteligente o seu dinheiro, lembrando sempre que ele não aceita desaforo.</li>
-                            <li>Reúna a família periodicamente e converse sobre o que pretendem realizar no futuro, sempre consultando também as crianças nessas reuniões, pois elas têm muito a contribuir.</li>
-                            <li>Ressalto a importância de inserir como sonho a ser realizado o da independência financeira ou da aposentadoria sustentável. </li>
-                        </ul>
-                    </section>
-
-                    <div id="motivacional" class="text-center" style="margin: 10px">
-                        <h3>Acredite na beleza dos seus sonhos e boa sorte!</h3>
-                    </div>
-                </div>
-
-                <div id="endividado" class="card" style="display:none">
-                    <header class="alert alert-danger">
-                        Sua situação é delicada e você pode estar inadimplente ou muito próximo disso.
-                    </header>
-                    <section>
-                        <ul>
-                            <li>É preciso ter atenção e não desanimar, porque chegou o momento de levantar a cabeça e saber que sempre existe um caminho.</li>
-                            <li>Reassuma o controle financeiro de sua vida, reunindo a família, inclusive as crianças, para uma conversa franca.</li>
-                            <li>Talvez seja a primeira vez que você esteja fazendo isso.</li>
-                            <li>O mais importante é que todos estejam envolvidos nessa missão: sair do endividamento.</li>
-                            <li>É preciso fazer um diagnóstico financeiro, saber quanto ganha, com o que gasta, descrever e detalhar todos os credores e os valores das dívidas.</li>
-                            <li>Mas, atenção, não procure o credor para fazer acordo no primeiro momento.</li>
-                            <li>Caso ele venha lhe procurar, diga que você está se organizando financeiramente e sabe que deve, mas pagará quando e como puder.</li>
-                            <li>Portanto, tome uma atitude, tenha disciplina e muita perseverança. Tudo começa com o primeiro degrau.</li>
-                            <li>Lembre-se de que estar endividado ou inadimplente é uma questão de escolha!</li>
-                        </ul>
-                    </section>
-
-                    <div id="motivacional" class="text-center" style="margin: 10px">
-                        <h3>Acredite na beleza dos seus sonhos e boa sorte!</h3>
-                    </div>
-                </div>
-
-                <div id="equilibrado" class="card" style="display:none">
-                    <header class="alert alert-warning">
-                        Pode parecer que tudo está em plena ordem, mas o fato de não ter dívidas ou, se as possuir e estiverem controladas, não pode ser razão de tranquilidade.
-                    </header>
-                    <section>
-                        <ul>
-                            <li>Isso porque você não criou o hábito de guardar parte do dinheiro que ganha e, consequentemente, quase não consegue acumular reservas financeiras.</li>
-                            <li>Grande parte da população encontra-se nessa situação!</li>
-                            <li>Se algum imprevisto acontecer, como perda do emprego ou problemas de saúde, por exemplo, é bem provável que você não tenha alternativa a não ser a de se tornar uma pessoa inadimplente com relação aos compromissos assumidos.</li>
-                            <li>Saia da “zona de conforto” e assuma uma nova postura em relação à utilização do seu dinheiro.</li>
-                            <li>É preciso retomar o comando de sua vida financeira, fazendo imediatamente um diagnóstico com a ajuda da família, registrando até mesmo as pequenas despesas.</li>
-                            <li>Defina também os seus sonhos, para que se possa iniciar esse processo, pois será necessário saber quanto custam, quanto você precisará guardar por mês e em quanto tempo eles serão realizados. </li>
-                            <li>Poupar e investir o dinheiro para a realização dos sonhos e objetivos é vital para que se possa sair dessa situação. Portanto, não perca mais tempo!</li>
-                        </ul>
-                    </section>
-
-                    <div id="motivacional" class="text-center" style="margin: 10px">
-                        <h3>Acredite na beleza dos seus sonhos e boa sorte!</h3>
-                    </div>
-                </div>
-
-                <div id="erro" class="card" style="display:none">
-                    <header class="alert alert-secondary">
-                        erro de cálculo.
-                    </header>
-
-                    <div id="motivacional" class="text-center" style="margin: 10px">
-                        <h4>Entre em contato com o desenvolvedor.</h4>
-                    </div>
-                </div>
-
-            </div>
-
-            <br>
-
-        </div>
-
-        <div class="modal" id="modalConfirm">
-            <div class="modal-dialog">
-                <div class="modal-content">
-
-                    <div class="modal-header">
-                        <h4 class="modal-title">Gostaria de terminar o teste?</h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="send()">Sim</button>
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Não</button>
-                    </div>
+            <section>
+                <div class="">
 
                 </div>
-            </div>
-        </div>
-
-        <script type="text/javascript">
-            var questoes;
-
-            $(document).ready( function () {
-                get_questionario().then((result)=>{
-                    fillTest(result);
-                    questoes = result;
-                })
-            } );
-        </script>
+            </section>
+        </article>
     </body>
 </html>
