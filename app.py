@@ -213,7 +213,9 @@ def home():
 @app.route('/<code>')
 def form(code:str=None):
     if code in get_quest_codes():
-        return render_template('form.html', code)
+        return render_template('form.html', code=code)
+
+    return "formulário inexistente, volte para tela principal."
 
 @app.route('/questionario/<code>')
 def get_questionario(code:str=None):

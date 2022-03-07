@@ -9,9 +9,14 @@
         <script src="/static/node_modules/bootstrap/dist/js/bootstrap.min.js" charset="utf-8"></script>
 
         <link rel="stylesheet" href="/static/node_modules/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/static/node_modules/@fortawesome/fontawesome-free/css/all.min.css">
+
         <style media="screen">
             .texto-resposta{
                 display: inline-block;
+            }
+            .margem_10{
+                margin:10px;
             }
         </style>
         <script type="text/javascript">
@@ -169,6 +174,9 @@
             }
 
             function disableForm(){
+                document.getElementById('ver_perguntas').removeAttribute('style');
+                document.getElementById('perguntas_box').collapse("hide");
+
                 document.getElementById('submit_button').setAttribute('disabled', true);
 
                 document.getElementById('email').setAttribute('disabled', true);
@@ -182,6 +190,9 @@
             }
 
             function enableForm(){
+                document.getElementById('ver_perguntas').setAttribute('style','display:none');
+                document.getElementById('perguntas_box').collapse("show");
+
                 document.getElementById('submit_button').removeAttribute('disabled');
                 document.getElementById('email').removeAttribute('disabled');
 
@@ -254,15 +265,12 @@
                         }
                     });
             }
-// eu@gmail.com
         </script>
     </head>
     <body>
         <div class="container">
 
             <header class="mt-4 p-5 bg-primary text-white rounded text-center">
-                <h1>Instituto de Cartografia Aeronáutica</h1>
-                <h2>Programa de Educação Financeira</h2>
                 <h3>Teste de Diagnóstico Financeiro</h3>
             </header>
 
@@ -274,7 +282,7 @@
 
                 <form action="#" id="form" autocomplete="off">
 
-                    <section class="card" style="margin:5px;">
+                    <section class="card" style="margin:15px;">
                         <div class="card-header">
                             <strong>Informe seu e-mail:</strong>
                         </div>
@@ -285,9 +293,12 @@
                         </div>
                     </section>
 
-                    <div id="perguntas"></div>
+                    <button type="button" id="ver_perguntas" style="display:none;" class="btn btn-info margem_10" data-bs-toggle="collapse" aria-expanded="true" data-bs-target="#perguntas_box"><i class="fa-solid fa-eye"></i> ver perguntas</button>
+                    <div id="perguntas_box" class="collapse.show">
+                        <div id="perguntas"></div>
+                        <button id="submit_button" type="button" class="btn btn-primary" onclick="confirm()">Enviar</button>
+                    </div>
 
-                    <button id="submit_button" type="button" class="btn btn-primary" onclick="confirm()">Enviar</button>
                 </form>
 
             </div>

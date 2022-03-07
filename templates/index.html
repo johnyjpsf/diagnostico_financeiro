@@ -9,43 +9,99 @@
         <script src="/static/node_modules/jquery/dist/jquery.min.js" charset="utf-8"></script>
         <script src="/static/node_modules/bootstrap/dist/js/bootstrap.min.js" charset="utf-8"></script>
 
+        <link rel="stylesheet" href="/static/css/reset.css">
         <link rel="stylesheet" href="/static/node_modules/bootstrap/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="/static/node_modules/@fortawesome/fontawesome-free/css/all.min.css">
 
         <style media="screen">
+            #grad {
+                background-image: linear-gradient(to bottom right, #448, #0D6EFD);
+                position: absolute;
+                top: 0px;
+                bottom: 0px;
+                right: 0px;
+                left: 0px;
+                border: solid red 1px;
+                color: white;
+            }
+
+            .title{
+                /* border: solid green 1px; */
+                text-align:center;
+                left: 0px;
+                right: 0px;
+                position:relative;
+                display:block;
+                padding-top: 20px;
+            }
+
+            .footer{
+                position: absolute;
+                bottom: 0px;
+                left: 0px;
+                right: 0px;
+                height: 50px;
+                color: white;
+                text-align: center;
+                line-height: 50px;
+            }
+
+            .options_box{
+                margin-top: 30px;
+                text-align: center;
+                margin-bottom: 50px;
+            }
+
             .option{
                 width: 200px;
-                height: 200px;
-                border-radius: 3px;
+                height: 150px;
+                border-radius: 10px;
                 border: solid 1px black;
                 margin: 5px;
                 padding: 5px;
-                background-color: #FFF;
+                background-color: #CCC;
                 font-weight: bold;
                 font-size: 16px;
                 overflow: hidden;
                 display: inline-block;
+                text-decoration: none;
+                color: #448;
+                text-align: center;
+                position: relative;
+            }
+
+            .option:hover{
+                background-color: #FFF;
+                transition: ease 0.4s;
             }
         </style>
     </head>
     <body>
-        <article class="container-fluid">
-            <header class="" style="width:100%">
+        <article class="container-fluid"  id="grad">
+            <header style="width:100%;">
 
-                <h1 style="position: relative; display:inline-block">Programa de Educação Financeira</h1>
+                <div class="h1 title">Programa de Educação Financeira</div>
 
                 <div style="position: absolute; display:inline-block; right:5px; top:5px;">
-                    <button type="button" name="button" class="btn btn-dark btn-sm">
+                    <button type="button" name="button" class="btn btn-light btn-sm">
                         <i class="fa-solid fa-gear"></i>
                     </button>
                 </div>
 
             </header>
-            <section>
-                <div class="">
-
-                </div>
+            <section class="options_box">
+                <a href="/PEF_ICA_01" class="option">
+                    <p>
+                        Questionário PEF_ICA_01:
+                    </p>
+                    <p>
+                        Teste de Diagnóstico Financeiro
+                    </p>
+                </a>
             </section>
+            <footer class="footer">
+                Desenvolvido pela SDEP
+            </footer>
         </article>
     </body>
 </html>
