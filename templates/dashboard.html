@@ -68,9 +68,18 @@
             <canvas id="myChart" style="position:absolute;"></canvas>
         </section>
         <footer class="container">
-            <a href="/" class="btn btn-outline-dark">
+            <section class="row">
+                <div id="porcentagens" class="text-center" style="display: inline-block">
+                    <button type="button" name="button" class="m-1 btn btn-success" disabled>{{(count_rank1 * 100) / (count_rank1 + count_rank2 + count_rank3)}}%</button>
+                    <button type="button" name="button" class="m-1 btn btn-warning" disabled>{{(count_rank2 * 100) / (count_rank1 + count_rank2 + count_rank3)}}%</button>
+                    <button type="button" name="button" class="m-1 btn btn-danger" disabled>{{(count_rank3 * 100) / (count_rank1 + count_rank2 + count_rank3)}}%</button>
+                </div>
+
+            </section>
+            <a href="/" class="btn btn-dark">
                 <i class="fas fa-home"></i> <strong>Home</strong>
             </a>
+
         </footer>
     </body>
     <script>
