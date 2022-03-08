@@ -12,75 +12,45 @@
         <link rel="stylesheet" href="/static/css/reset.css">
         <link rel="stylesheet" href="/static/node_modules/bootstrap/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="/static/node_modules/@fortawesome/fontawesome-free/css/all.min.css">
+        <link rel="stylesheet" href="/static/css/index.css">
 
-        <style media="screen">
-            #grad {
-                background-image: linear-gradient(to bottom right, #448, #0D6EFD);
-                position: absolute;
-                top: 0px;
-                bottom: 0px;
-                right: 0px;
-                left: 0px;
-                border: solid red 1px;
-                color: white;
+        <script type="text/javascript">
+            function componentNota(text, href){
+                const elem = document.createElement('a');
+                elem.setAttribute('class','option');
+                elem.setAttribute('href',href);
+
+                elem.innerHTML = `<div class="option_text">
+                        ${text}
+                    </div>
+                    <div class="option_ilustration">
+                        <img class="option_image rounded-circle" src="/static/images/rosto.jpeg" alt="rosto_dinheiro">
+                        <div class="option_ilustration_number">
+                            100
+                        </div>
+                        <div class="option_ilustration_text">
+                            $
+                        </div>
+                    </div>`
+
+                return elem;
             }
 
-            .title{
-                /* border: solid green 1px; */
-                text-align:center;
-                left: 0px;
-                right: 0px;
-                position:relative;
-                display:block;
-                padding-top: 20px;
+            function generate_options(){
+                const box = document.getElementById('options_box');
+                box.appendChild(componentNota("Teste de Diagnóstico Financeiro", "/PEF_ICA_01"));
+                box.appendChild(componentNota("Resultado do teste", "#"));
+                box.appendChild(componentNota("Cronograma de atividades", "#"));
+                box.appendChild(componentNota("Conteúdos das palestras", "#"));
             }
-
-            .footer{
-                position: absolute;
-                bottom: 0px;
-                left: 0px;
-                right: 0px;
-                height: 50px;
-                color: white;
-                text-align: center;
-                line-height: 50px;
-            }
-
-            .options_box{
-                margin-top: 30px;
-                text-align: center;
-                margin-bottom: 50px;
-            }
-
-            .option{
-                width: 200px;
-                height: 150px;
-                border-radius: 10px;
-                border: solid 1px black;
-                margin: 5px;
-                padding: 5px;
-                background-color: #CCC;
-                font-weight: bold;
-                font-size: 16px;
-                overflow: hidden;
-                display: inline-block;
-                text-decoration: none;
-                color: #448;
-                text-align: center;
-                position: relative;
-            }
-
-            .option:hover{
-                background-color: #FFF;
-                transition: ease 0.4s;
-            }
-        </style>
+        </script>
     </head>
     <body>
         <article class="container-fluid"  id="grad">
             <header style="width:100%;">
 
-                <div class="h1 title">Programa de Educação Financeira</div>
+                <div class="h1 title">Instituto de Cartografia Aeronáutica</div>
+                <div class="h2 title">Programa de Educação Financeira</div>
 
                 <div style="position: absolute; display:inline-block; right:5px; top:5px;">
                     <button type="button" name="button" class="btn btn-light btn-sm">
@@ -89,19 +59,23 @@
                 </div>
 
             </header>
-            <section class="options_box">
-                <a href="/PEF_ICA_01" class="option">
-                    <p>
-                        Questionário PEF_ICA_01:
-                    </p>
-                    <p>
-                        Teste de Diagnóstico Financeiro
-                    </p>
-                </a>
+            <section id="apresentacao">
+                <img src="/static/images/educacao_financeira.png" class="rounded-circle" alt="educação financeira" id="image">
+                <div class="">
+
+                </div>
             </section>
+
+            <section class="options_box" id="options_box"></section>
+
             <footer class="footer">
                 Desenvolvido pela SDEP
             </footer>
         </article>
+        <script type="text/javascript">
+        $(document).ready( function () {
+            generate_options();
+        } );
+        </script>
     </body>
 </html>

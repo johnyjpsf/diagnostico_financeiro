@@ -21,13 +21,13 @@
         </style>
         <script type="text/javascript">
 
-            function getResearshCode(){
+            function getQuestionnaireCode(){
                 // return 'PEF_ICA_01';
                 return '{{code}}';
             }
 
             async function get_questionario(){
-                let resultado = await $.getJSON('/questionario/' + getResearshCode());
+                let resultado = await $.getJSON('/questionario/' + getQuestionnaireCode());
                 return resultado;
             }
 
@@ -51,7 +51,7 @@
 
             function componentAlternative(name, element){
                 const text = `<div>
-                                <input id="${name}__${element.id}" type="radio" name="${name}" value="${element.points}" class="form-check-input" onchange="clearTag('${name}_msg')" required>
+                                <input id="${name}__${element.id}" type="radio" name="${name}" value="${element.points}" class="form-check-input" onchange="clearQuestionMsg('${name}_msg')" required>
                                 <label for="${name}__${element.id}" class="form-check-label">${element.id})</label>
                                 <div class="texto-resposta">
                                     ${element.text}
@@ -132,6 +132,11 @@
                 return email_is_valid;
             }
 
+            function put_pendency_msg(msg){
+                const msg_box = document.getElementById('pendency_msg');
+                msg_box.innerHTML = msg
+            }
+
             function validate_form(){
                 let email_is_valid = validateEmail();
                 let all_question_answered = true;
@@ -153,8 +158,9 @@
                 if (email_is_valid && all_question_answered) {
                     return true
                 }
-                return false
 
+                put_pendency_msg("Ainda há pendências no formulário.");
+                return false
             }
 
             function clearTag(id){
@@ -162,8 +168,14 @@
                 tag.innerHTML = "";
             }
 
+            function clearQuestionMsg(id){
+                clearTag(id);
+                clearTag('pendency_msg');
+            }
+
             function clear_email_msg(){
                 clearTag('email_msg');
+                clearTag('pendency_msg');
             }
 
             function clear_msgs(){
@@ -175,10 +187,12 @@
 
             function disableForm(){
                 document.getElementById('ver_perguntas').removeAttribute('style');
-                document.getElementById('perguntas_box').collapse("hide");
+                const perguntas_box = document.getElementById('perguntas_box');
+                var bsCollapse = new bootstrap.Collapse(perguntas_box, {
+                    hide: true
+                });
 
-                document.getElementById('submit_button').setAttribute('disabled', true);
-
+                document.getElementById('submit_button').setAttribute('style', "display:none");
                 document.getElementById('email').setAttribute('disabled', true);
 
                 questoes.forEach((question, q) => {
@@ -191,9 +205,12 @@
 
             function enableForm(){
                 document.getElementById('ver_perguntas').setAttribute('style','display:none');
-                document.getElementById('perguntas_box').collapse("show");
+                const perguntas_box = document.getElementById('perguntas_box');
+                var bsCollapse = new bootstrap.Collapse(perguntas_box, {
+                    show: true
+                });
 
-                document.getElementById('submit_button').removeAttribute('disabled');
+                document.getElementById('submit_button').removeAttribute('style');
                 document.getElementById('email').removeAttribute('disabled');
 
                 questoes.forEach((question, q) => {
@@ -226,18 +243,18 @@
                     pontuacao = pontuacao + parseInt(getRadioValue(item.id))
 
                     id_list.push({
-                        "pergunta" : item.id,
-                        "resposta" : resp,
-                        "pontos" : getRadioValue(item.id)
+                        pergunta : item.id,
+                        resposta : resp,
+                        pontos : getRadioValue(item.id)
                     });
 
                 });
 
                 const resultado = {
-                    "email" : getEmail(),
-                    "pesquisa" : getResearshCode(),
-                    "gabarito" : id_list,
-                    "pontuacao" : pontuacao
+                    email : getEmail(),
+                    questionario : getQuestionnaireCode(),
+                    gabarito : id_list,
+                    pontuacao : pontuacao
                 };
 
                 return resultado;
@@ -249,12 +266,15 @@
                 const result_msg = calcula(diagnostic.pontuacao);
                 showResultMessage(result_msg);
                 const json_data = JSON.stringify(diagnostic);
+
+                console.log(json_data);
+
                 $.ajax({
                         type: "POST",
                         url: '/resultado',
                         data: json_data,
-                        contentType: 'application/json',
-                        dataType: 'json',
+                        contentType : 'application/json',
+                        dataType : 'json',
                         statusCode: {
                             404: function() {
                                 console.log( "page not found" );
@@ -270,7 +290,7 @@
     <body>
         <div class="container">
 
-            <header class="mt-4 p-5 bg-primary text-white rounded text-center">
+            <header class="mt-2 p-3 bg-primary text-white rounded text-center">
                 <h3>Teste de Diagnóstico Financeiro</h3>
             </header>
 
@@ -293,10 +313,14 @@
                         </div>
                     </section>
 
-                    <button type="button" id="ver_perguntas" style="display:none;" class="btn btn-info margem_10" data-bs-toggle="collapse" aria-expanded="true" data-bs-target="#perguntas_box"><i class="fa-solid fa-eye"></i> ver perguntas</button>
-                    <div id="perguntas_box" class="collapse.show">
+                    <button type="button" id="ver_perguntas" style="display:none;" class="btn btn-info margem_10" data-bs-toggle="collapse" aria-expanded="true" data-bs-target="#perguntas_box">
+                        <i class="fa-solid fa-eye"></i> ver perguntas novamente
+                    </button>
+
+                    <div id="perguntas_box" class="collapse show">
                         <div id="perguntas"></div>
                         <button id="submit_button" type="button" class="btn btn-primary" onclick="confirm()">Enviar</button>
+                        <div id="pendency_msg" style="display:inline-block;color:red;font-weight:bold;margin-left:10px;"></div>
                     </div>
 
                 </form>

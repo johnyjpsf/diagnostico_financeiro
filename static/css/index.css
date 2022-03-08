@@ -1,0 +1,133 @@
+:root {
+  --cinza: #003566;
+  --azul: #98c1d9;
+  --celeste: #e0fbfc;
+  --amarelo: #ffb703;
+  --chumbo: #293241;
+  --verde: #619b8a;
+  --verde_claro: #99c2a2;
+  --verde_escuro: #3e5641;
+
+}
+
+#grad {
+    background-image: linear-gradient(to bottom right, var(--cinza), var(--azul));
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    left: 0px;
+    /* border: solid red 1px; */
+    color: white;
+    width: auto;
+}
+
+.title{
+    /* border: solid green 1px; */
+    text-align:center;
+    left: 0px;
+    right: 0px;
+    position:relative;
+    display:block;
+    padding-top: 20px;
+}
+
+.footer{
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    height: 50px;
+    color: var(--chumbo);
+    text-align: center;
+    line-height: 50px;
+    font-style: italic;
+    font-weight: bold;
+}
+
+#apresentacao{
+    position: relative;
+    right: 0;
+    left: 0;
+    margin-top: 30px;
+}
+
+#image{
+    max-height: 300px;
+    width: auto;
+    border: 3px solid var(--amarelo);
+}
+
+.options_box{
+    margin-top: 30px;
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.option{
+    width: 250px;
+    height: 125px;
+    border: solid 5px var(--verde_escuro);
+    margin: 5px;
+    padding: 5px;
+    background-color: var(--verde);
+    color: var(--celeste);
+    font-weight: bold;
+    font-size: 16px;
+    overflow: hidden;
+    display: inline-block;
+    text-decoration: none;
+    text-align: center;
+    position: relative;
+}
+
+.option_ilustration{
+    position: absolute;
+    display: inline-block;
+    width: 40%;
+    right: 0;
+}
+
+.option_ilustration_number{
+    position: absolute;
+    display: inline-block;
+    width: 25%;
+    right: 10px;
+    top: 0;
+    color: var(--chumbo);
+    font-size: 15px;
+}
+.option_ilustration_text{
+    position: absolute;
+    display: inline-block;
+    width: 25%;
+    right: 5px;
+    bottom: 0;
+    color: var(--chumbo);
+    font-size: 35px;
+}
+
+.option_image{
+    left: 0px;
+    position: relative;
+    display: block;
+    height: auto;
+    width: 65%;
+}
+
+.option_text{
+    padding: 5px;
+    position: absolute;
+    display: inline-block;
+    width: 60%;
+    text-align: center;
+    color: var(--chumbo);
+    font-size: 15px;
+    left: 0;
+}
+
+.option:hover{
+    background-color: var(--verde_claro);
+    color : var(--amarelo);
+    transition: ease 0.4s;
+}
