@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>PEF ICA</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <script src="/static/node_modules/jquery/dist/jquery.min.js" charset="utf-8"></script>
+        <script src="/static/node_modules/bootstrap/dist/js/bootstrap.min.js" charset="utf-8"></script>
+        <script src="/static/node_modules/chart.js/dist/chart.min.js" charset="utf-8"></script>
+
+        <link rel="stylesheet" href="/static/node_modules/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/static/node_modules/@fortawesome/fontawesome-free/css/all.min.css">
+        <style media="screen">
+            :root{
+                --chart_width: 500px;
+                --chart_heigth: 500px;
+            }
+            #total_box{
+                font-weight:bold;
+                position:absolute;
+                left:0;
+                right:0;
+                text-align:center;
+                line-height: var(--chart_heigth);
+            }
+
+            #chart_box{
+                width:var(--chart_width);
+                height:var(--chart_heigth);
+            }
+        </style>
+        <script>
+            const labels = [
+                'Investidor',
+                'Equilibrado',
+                'Endividado',
+            ];
+
+            const data = {
+                labels: labels,
+                datasets: [{
+                    label: 'Perfis',
+                    backgroundColor: [
+                        'rgb(99, 220, 99)',
+                        'rgb(255, 205, 86)',
+                        'rgb(220, 80, 80)',
+                    ],
+                    borderColor: 'rgb(99, 99, 99)',
+                    data: [{{count_rank1}}, {{count_rank2}}, {{count_rank3}}],
+                }]
+            };
+
+            const config = {
+                type: 'doughnut',
+                data: data
+            };
+        </script>
+    </head>
+    <body>
+        <header class="container">
+            <h2>Resultado do <strong>{{nome_questionario}}</strong></h2>
+        </header>
+        <section class="container" id="chart_box">
+            <div id="total_box">
+                TOTAL: <span id="total">{{count_rank1 + count_rank2 + count_rank3}}</span>
+            </div>
+            <canvas id="myChart" style="position:absolute;"></canvas>
+        </section>
+        <footer class="container">
+            <a href="/" class="btn btn-outline-dark">
+                <i class="fas fa-home"></i> <strong>Home</strong>
+            </a>
+        </footer>
+    </body>
+    <script>
+        const myChart = new Chart(
+            document.getElementById('myChart'),
+            config
+        );
+    </script>
+</html>

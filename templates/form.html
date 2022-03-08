@@ -2,7 +2,7 @@
 <html lang="pt-br" dir="ltr">
     <head>
         <meta charset="utf-8">
-        <title>Questionário PEF</title>
+        <title>PEF ICA</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <script src="/static/node_modules/jquery/dist/jquery.min.js" charset="utf-8"></script>
@@ -22,8 +22,7 @@
         <script type="text/javascript">
 
             function getQuestionnaireCode(){
-                // return 'PEF_ICA_01';
-                return '{{code}}';
+                return '{{codigo_questionario}}';
             }
 
             async function get_questionario(){
@@ -63,12 +62,12 @@
             function componentQuestion(element, i){
                 const component = document.createElement("div")
                 let alternativas = ""
-                element.alternatives.forEach((item, i) => {
+                element.alternativas.forEach((item, i) => {
                     alternativas = alternativas + componentAlternative(element.id, item)
                 });
                 const text = `<section id="${element.id}" class="card" style="margin:15px">
                                     <div class="card-header">
-                                        <h3>${i+1}) ${element.question}</h3>
+                                        <h3>${i+1}) ${element.enunciado}</h3>
                                     </div>
                                     <div class="card-body">
                                         ${alternativas}
@@ -196,7 +195,7 @@
                 document.getElementById('email').setAttribute('disabled', true);
 
                 questoes.forEach((question, q) => {
-                    question.alternatives.forEach((alternative, a) => {
+                    question.alternativas.forEach((alternative, a) => {
                         const quest = document.getElementById(question.id+"__"+alternative.id);
                         quest.setAttribute('disabled', true);
                     });
@@ -214,7 +213,7 @@
                 document.getElementById('email').removeAttribute('disabled');
 
                 questoes.forEach((question, q) => {
-                    question.alternatives.forEach((alternative, a) => {
+                    question.alternativas.forEach((alternative, a) => {
                         const quest = document.getElementById(question.id+"__"+alternative.id);
                         quest.removeAttribute('disabled');
                     });
@@ -267,8 +266,6 @@
                 showResultMessage(result_msg);
                 const json_data = JSON.stringify(diagnostic);
 
-                console.log(json_data);
-
                 $.ajax({
                         type: "POST",
                         url: '/resultado',
@@ -291,11 +288,14 @@
         <div class="container">
 
             <header class="mt-2 p-3 bg-primary text-white rounded text-center">
-                <h3>Teste de Diagnóstico Financeiro</h3>
+                <h3>{{nome_questionario}}</h3>
             </header>
+            <a href="/" class="btn btn-outline-dark" style="position:fixed; margin:10px; left:0; top:0;">
+                <i class="fas fa-home"></i> <strong>Home</strong>
+            </a>
 
             <div class="">
-                <p>O presente teste tem por finalidade diagnosticar a saúde financeira do nosso efetivo, para que a equipe do <strong>Programa de Educação Financeira</strong> possa utilizar os dados obtidos na criação de conteúdos.</p>
+                <p>{{descricao}}</p>
             </div>
 
             <div class="questionario">

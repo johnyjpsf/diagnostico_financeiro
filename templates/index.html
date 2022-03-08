@@ -39,7 +39,7 @@
             function generate_options(){
                 const box = document.getElementById('options_box');
                 box.appendChild(componentNota("Teste de Diagnóstico Financeiro", "/PEF_ICA_01"));
-                box.appendChild(componentNota("Resultado do teste", "#"));
+                box.appendChild(componentNota("Resultado do teste", "/dashboard/PEF_ICA_01"));
                 box.appendChild(componentNota("Cronograma de atividades", "#"));
                 box.appendChild(componentNota("Conteúdos das palestras", "#"));
             }
@@ -59,10 +59,12 @@
                 </div>
 
             </header>
-            <section id="apresentacao">
-                <img src="/static/images/educacao_financeira.png" class="rounded-circle" alt="educação financeira" id="image">
-                <div class="">
-
+            <section id="apresentacao" class="row">
+                <div class="col-sm-6 text-center">
+                    <img src="/static/images/educacao_financeira.png" class="rounded-circle image" alt="educação financeira" id="image">
+                </div>
+                <div class="col-sm-6 text">
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
                 </div>
             </section>
 
@@ -73,9 +75,9 @@
             </footer>
         </article>
         <script type="text/javascript">
-        $(document).ready( function () {
-            generate_options();
-        } );
+            $(document).ready( function () {
+                generate_options();
+            } );
         </script>
     </body>
 </html>

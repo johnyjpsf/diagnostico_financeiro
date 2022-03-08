@@ -47,15 +47,21 @@
 
 #apresentacao{
     position: relative;
-    right: 0;
-    left: 0;
-    margin-top: 30px;
+    margin-top: 50px;
+    margin-left: 15%;
+    margin-right: 15%;
 }
 
-#image{
-    max-height: 300px;
-    width: auto;
+#apresentacao .image{
+    max-height: auto;
+    width: 100%;
     border: 3px solid var(--amarelo);
+    display: block;
+}
+
+#apresentacao .text{
+    text-align: justify;
+    display: block;
 }
 
 .options_box{
