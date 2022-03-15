@@ -195,7 +195,12 @@ def page_dashboard(code:str=None):
                 count_rank3=count_rank3
             )
         except Exception as e:
-            return fail_msg + "<br>" + str(e)
+            fail_msg = """
+                        <h1>Não existem resultados para esse questionário</h1>
+                        <br>
+                        <a href="/">voltar</a>
+                    """
+            return fail_msg
 
 
     return fail_msg
@@ -482,4 +487,4 @@ def load_quest_1():
     })
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False, host='0.0.0.0')

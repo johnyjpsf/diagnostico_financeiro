@@ -1,7 +1,7 @@
 flask:
     container_name: ${NOME_PROJETO}_flask
-    image: 
+    build: ./docker-assets
     volumes:
-        - "${DADOS}:/usr/share/nginx/html bauidch/flask-deployer"
+        - "${APP}:/usr/share/nginx/html"
     ports:
          - "${PORTA}:80"
