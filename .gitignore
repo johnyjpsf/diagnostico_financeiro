@@ -1,2 +1,2 @@
-docker-assets/.env
+.env
 app/__pycache__
