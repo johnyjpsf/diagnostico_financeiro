@@ -1,13 +1,9 @@
-FROM nginx
+FROM python:3.8-slim
 
-RUN apt-get update
-RUN apt-get install -y python3-pip python3-dev nano
+ENV CONTAINER_HOME=/var/www
 
-WORKDIR /app
+ADD . $CONTAINER_HOME
 
-COPY ./app/requirements.txt /
-COPY ./app.conf /etc/nginx/sites-available/app
-RUN mkdir -p /etc/nginx/sites-enabled/
-RUN ln -s /etc/nginx/sites-available/app /etc/nginx/sites-enabled/
+WORKDIR $CONTAINER_HOME
 
-RUN pip install --no-cache-dir -r /requirements.txt
+RUN pip install --no-cache-dir -r $CONTAINER_HOME/requirements.txt
