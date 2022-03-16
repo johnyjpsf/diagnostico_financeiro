@@ -1,7 +1,8 @@
 flask:
     container_name: ${NOME_PROJETO}_flask
-    build: ./docker-assets
+    build: ./
     volumes:
-        - "${APP}:/usr/share/nginx/html"
+        - "${APP}:/app"
     ports:
-         - "${PORTA}:80"
+         - "${PORTA}:8080"
+    command: sh -c "service nginx start && gunicorn --workers 3 --bind unix:/app/app.sock -m 777 wsgi:app && nginx -s reload"
