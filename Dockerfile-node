@@ -1,0 +1,11 @@
+FROM node:16-alpine
+
+ENV CONTAINER_HOME=/project
+
+COPY ssl-atsi.decea.intraer.pem $CONTAINER_HOME/
+
+WORKDIR $CONTAINER_HOME
+
+RUN npm config set cafile ssl-atsi.decea.intraer.pem
+
+RUN npm config list | grep cafile

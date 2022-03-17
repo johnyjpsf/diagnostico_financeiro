@@ -6,4 +6,4 @@ ADD . $CONTAINER_HOME
 
 WORKDIR $CONTAINER_HOME
 
-RUN pip install --no-cache-dir -r $CONTAINER_HOME/requirements.txt
+RUN pip install --cert ssl-atsi.decea.intraer.pem --no-cache-dir -r $CONTAINER_HOME/requirements.txt
