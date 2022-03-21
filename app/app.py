@@ -1,6 +1,6 @@
 from flask import Flask,render_template,jsonify,request,make_response,url_for,redirect
 import sqlite3, json
-
+import os
 
 def create_app():
     app = Flask(__name__)
@@ -207,12 +207,28 @@ def create_app():
 
         return fail_msg
 
-    @app.route('/create_db_and_load_quest_1', methods = ['POST'])
-    def api_create_db_and_load_quest_1():
+    @app.route('/db/delete', methods = ['DELETE'])
+    def api_delete_db():
+        try:
+            os.remove(db_name)
+            return jsonify({"msg":"deleted!"})
+        except Exception as e:
+            return jsonify({"msg":"error!", "exception":str(e)})
+
+    @app.route('/db/create', methods = ['POST'])
+    def api_create_db():
         try:
             create_db()
-            load_quest_1()
             return jsonify({"msg":"done!"})
+        except Exception as e:
+            return jsonify({"msg":"error!", "exception":str(e)})
+
+    @app.route('/db/load_quest/<quest>', methods = ['POST'])
+    def api_load_quest(quest):
+        functions = locals()
+        try:
+            functions["load" + quest.lower()]()
+            return jsonify({"msg": quest + " done!"})
         except Exception as e:
             return jsonify({"msg":"error!", "exception":str(e)})
 
@@ -247,7 +263,7 @@ def create_app():
             );
         """)
 
-    def load_quest_1():
+    def load_pef_ica_01():
         #questionario 1
         db_execute(db_name, """
             INSERT INTO questionario (codigo_questionario, nome_questionario, descricao, aberto) VALUES (:codigo_questionario, :nome_questionario, :descricao, :aberto);
