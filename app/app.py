@@ -207,302 +207,313 @@ def create_app():
 
         return fail_msg
 
-    @app.route('/db/delete', methods = ['DELETE'])
+    @app.route('/db', methods = ['POST','DELETE'])
     def api_delete_db():
-        try:
-            os.remove(db_name)
-            return jsonify({"msg":"deleted!"})
-        except Exception as e:
-            return jsonify({"msg":"error!", "exception":str(e)})
+        if request.method == "POST":
+            try:
+                create_db()
+                return jsonify({"msg":"created!"}), 201
+            except Exception as e:
+                return jsonify({"msg":"error!", "exception":str(e)}), 500
 
-    @app.route('/db/create', methods = ['POST'])
-    def api_create_db():
-        try:
-            create_db()
-            return jsonify({"msg":"done!"})
-        except Exception as e:
-            return jsonify({"msg":"error!", "exception":str(e)})
+        if request.method == "DELETE":
+            try:
+                os.remove(db_name)
+                return jsonify({"msg":"deleted!"}), 202
+            except Exception as e:
+                return jsonify({"msg":"error!", "exception":str(e)}), 500
 
-    @app.route('/db/load_quest/<quest>', methods = ['POST'])
+    @app.route('/quest/<quest>', methods = ['POST'])
     def api_load_quest(quest):
-        functions = locals()
-        try:
-            functions["load_" + quest.lower()]()
-            return jsonify({"msg": quest + " done!"})
-        except Exception as e:
-            return jsonify({"msg":"error!", "exception":str(e)})
+        if quest.strip().lower() == "pef_ica_01":
+            try:
+                return jsonify(pef_ica_01()), 201
+            except Exception as e:
+                return jsonify({"msg":"error!", "exception":str(e)}), 500
+        return jsonify({"msg":"Não é possível inserir esse questionário."}), 404
 
     def create_db():
-        db_execute(db_name, """
+        try:
+            db_execute(db_name, """
             CREATE TABLE IF NOT EXISTS resultado (
-                id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-                email TEXT NOT NULL,
-                codigo_questionario TEXT NOT NULL,
-                gabarito TEXT NOT NULL,
-                pontuacao INTEGER NOT NULL,
-                CONSTRAINT unique_hod UNIQUE (email, codigo_questionario)
+            id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+            email TEXT NOT NULL,
+            codigo_questionario TEXT NOT NULL,
+            gabarito TEXT NOT NULL,
+            pontuacao INTEGER NOT NULL,
+            CONSTRAINT unique_hod UNIQUE (email, codigo_questionario)
             );
-        """)
+            """)
 
-        db_execute(db_name, """
+            db_execute(db_name, """
             CREATE TABLE IF NOT EXISTS questionario (
-                codigo_questionario TEXT NOT NULL PRIMARY KEY,
-                nome_questionario TEXT NOT NULL,
-                descricao TEXT NOT NULL,
-                aberto INTEGER NOT NULL DEFAULT 0
+            codigo_questionario TEXT NOT NULL PRIMARY KEY,
+            nome_questionario TEXT NOT NULL,
+            descricao TEXT NOT NULL,
+            aberto INTEGER NOT NULL DEFAULT 0
             );
-        """)
+            """)
 
-        db_execute(db_name, """
+            db_execute(db_name, """
             CREATE TABLE IF NOT EXISTS questao (
-                id TEXT NOT NULL,
-                codigo_questionario TEXT NOT NULL,
-                enunciado TEXT NOT NULL,
-                alternativas TEXT NOT NULL,
-                CONSTRAINT primary_key PRIMARY KEY (id, codigo_questionario)
+            id TEXT NOT NULL,
+            codigo_questionario TEXT NOT NULL,
+            enunciado TEXT NOT NULL,
+            alternativas TEXT NOT NULL,
+            CONSTRAINT primary_key PRIMARY KEY (id, codigo_questionario)
             );
-        """)
+            """)
 
-    def load_pef_ica_01():
-        #questionario 1
-        db_execute(db_name, """
-            INSERT INTO questionario (codigo_questionario, nome_questionario, descricao, aberto) VALUES (:codigo_questionario, :nome_questionario, :descricao, :aberto);
-        """, {
-            "codigo_questionario" : "PEF_ICA_01",
-            "nome_questionario" : "Teste de Diagnóstico Financeiro",
-            "descricao" : "O presente teste tem por finalidade diagnosticar a saúde financeira do nosso efetivo, para que a equipe do Programa de Educação Financeira possa utilizar os dados obtidos na criação de conteúdos.",
-            "aberto" : 1,
-        })
+            return {"msg":"done!"}
+        except Exception as e:
+            return {"msg":"error!", "exception":str(e)}
 
-        # q1
-        db_execute(db_name, """
-            INSERT INTO questao (id, codigo_questionario, enunciado, alternativas) VALUES (:id, :codigo_questionario, :enunciado, :alternativas);
-        """, {
-            "id" : "q1",
-            "codigo_questionario" : "PEF_ICA_01",
-            "enunciado" : "O que você ganha por mês é suficiente para arcar com os seus gastos?",
-            "alternativas" : json.dumps([
+    def pef_ica_01():
+        try:
+            #questionario 1
+            db_execute(db_name, """
+                INSERT INTO questionario (codigo_questionario, nome_questionario, descricao, aberto) VALUES (:codigo_questionario, :nome_questionario, :descricao, :aberto);
+            """, {
+                "codigo_questionario" : "PEF_ICA_01",
+                "nome_questionario" : "Teste de Diagnóstico Financeiro",
+                "descricao" : "O presente teste tem por finalidade diagnosticar a saúde financeira do nosso efetivo, para que a equipe do Programa de Educação Financeira possa utilizar os dados obtidos na criação de conteúdos.",
+                "aberto" : 1,
+            })
+
+            # q1
+            db_execute(db_name, """
+                INSERT INTO questao (id, codigo_questionario, enunciado, alternativas) VALUES (:id, :codigo_questionario, :enunciado, :alternativas);
+            """, {
+                "id" : "q1",
+                "codigo_questionario" : "PEF_ICA_01",
+                "enunciado" : "O que você ganha por mês é suficiente para arcar com os seus gastos?",
+                "alternativas" : json.dumps([
+                        {"id" : "a",
+                            "text": "Consigo pagar as minhas contas e ainda sobra dinheiro para guardar;",
+                            "points": 10,
+                        },
+                        {"id" : "b",
+                            "text": "É suficiente, mas não sobra nada;",
+                            "points": 5,
+                        },
+                        {"id" : "c",
+                            "text": "Gasto todo o meu dinheiro e ainda uso o limite do cheque especial ou peço emprestado para parentes e amigos.",
+                            "points": 0,
+                        },
+                    ]),
+            })
+
+            # q2
+            db_execute(db_name, """
+                INSERT INTO questao (id, codigo_questionario, enunciado, alternativas) VALUES (:id, :codigo_questionario, :enunciado, :alternativas);
+            """, {
+                "id" : "q2",
+                "codigo_questionario" : "PEF_ICA_01",
+                "enunciado" : "Você tem conseguido pagar as suas despesas em dia e à vista?",
+                "alternativas" : json.dumps([
                     {"id" : "a",
-                        "text": "Consigo pagar as minhas contas e ainda sobra dinheiro para guardar;",
+                        "text": "Pago em dia, à vista e, em alguns casos, com bons descontos;",
                         "points": 10,
                     },
                     {"id" : "b",
-                        "text": "É suficiente, mas não sobra nada;",
+                        "text": "Quase sempre, mas tenho que parcelar as compras de maior valor;",
                         "points": 5,
                     },
                     {"id" : "c",
-                        "text": "Gasto todo o meu dinheiro e ainda uso o limite do cheque especial ou peço emprestado para parentes e amigos.",
+                        "text": "Sempre parcelo os meus compromissos e utilizo linhas de crédito como cheque especial, cartão de crédito e crediário.",
                         "points": 0,
                     },
                 ]),
-        })
+            })
 
-        # q2
-        db_execute(db_name, """
-            INSERT INTO questao (id, codigo_questionario, enunciado, alternativas) VALUES (:id, :codigo_questionario, :enunciado, :alternativas);
-        """, {
-            "id" : "q2",
-            "codigo_questionario" : "PEF_ICA_01",
-            "enunciado" : "Você tem conseguido pagar as suas despesas em dia e à vista?",
-            "alternativas" : json.dumps([
-                {"id" : "a",
-                    "text": "Pago em dia, à vista e, em alguns casos, com bons descontos;",
-                    "points": 10,
-                },
-                {"id" : "b",
-                    "text": "Quase sempre, mas tenho que parcelar as compras de maior valor;",
-                    "points": 5,
-                },
-                {"id" : "c",
-                    "text": "Sempre parcelo os meus compromissos e utilizo linhas de crédito como cheque especial, cartão de crédito e crediário.",
-                    "points": 0,
-                },
-            ]),
-        })
+            # q3
+            db_execute(db_name, """
+                INSERT INTO questao (id, codigo_questionario, enunciado, alternativas) VALUES (:id, :codigo_questionario, :enunciado, :alternativas);
+            """, {
+                "id" : "q3",
+                "codigo_questionario" : "PEF_ICA_01",
+                "enunciado" : "Você monta o seu orçamento financeiro mensalmente?",
+                "alternativas" : json.dumps([
+                    {"id" : "a",
+                        "text": "Faço periodicamente e comparo o orçado com o realizado;",
+                        "points": 10,
+                    },
+                    {"id" : "b",
+                        "text": "Somente registro o realizado, sem analisar os gastos;",
+                        "points": 5,
+                    },
+                    {"id" : "c",
+                        "text": "Não faço o meu orçamento financeiro.",
+                        "points": 0,
+                    },
+                ]),
+            })
 
-        # q3
-        db_execute(db_name, """
-            INSERT INTO questao (id, codigo_questionario, enunciado, alternativas) VALUES (:id, :codigo_questionario, :enunciado, :alternativas);
-        """, {
-            "id" : "q3",
-            "codigo_questionario" : "PEF_ICA_01",
-            "enunciado" : "Você monta o seu orçamento financeiro mensalmente?",
-            "alternativas" : json.dumps([
-                {"id" : "a",
-                    "text": "Faço periodicamente e comparo o orçado com o realizado;",
-                    "points": 10,
-                },
-                {"id" : "b",
-                    "text": "Somente registro o realizado, sem analisar os gastos;",
-                    "points": 5,
-                },
-                {"id" : "c",
-                    "text": "Não faço o meu orçamento financeiro.",
-                    "points": 0,
-                },
-            ]),
-        })
+            # q4
+            db_execute(db_name, """
+                INSERT INTO questao (id, codigo_questionario, enunciado, alternativas) VALUES (:id, :codigo_questionario, :enunciado, :alternativas);
+            """, {
+                "id" : "q4",
+                "codigo_questionario" : "PEF_ICA_01",
+                "enunciado" : "Você consegue fazer algum tipo de investimento?",
+                "alternativas" : json.dumps([
+                    {"id" : "a",
+                        "text": "Utilizo mais de 10% da minha renda mensal em linhas de investimento que variam de acordo com os meus objetivos;",
+                        "points": 10,
+                    },
+                    {"id" : "b",
+                        "text": "Quando sobra dinheiro, invisto, normalmente, na poupança;",
+                        "points": 5,
+                    },
+                    {"id" : "c",
+                        "text": "Nunca sobra dinheiro para investir.",
+                        "points": 0,
+                    },
+                ]),
+            })
 
-        # q4
-        db_execute(db_name, """
-            INSERT INTO questao (id, codigo_questionario, enunciado, alternativas) VALUES (:id, :codigo_questionario, :enunciado, :alternativas);
-        """, {
-            "id" : "q4",
-            "codigo_questionario" : "PEF_ICA_01",
-            "enunciado" : "Você consegue fazer algum tipo de investimento?",
-            "alternativas" : json.dumps([
-                {"id" : "a",
-                    "text": "Utilizo mais de 10% da minha renda mensal em linhas de investimento que variam de acordo com os meus objetivos;",
-                    "points": 10,
-                },
-                {"id" : "b",
-                    "text": "Quando sobra dinheiro, invisto, normalmente, na poupança;",
-                    "points": 5,
-                },
-                {"id" : "c",
-                    "text": "Nunca sobra dinheiro para investir.",
-                    "points": 0,
-                },
-            ]),
-        })
+            # q5
+            db_execute(db_name, """
+                INSERT INTO questao (id, codigo_questionario, enunciado, alternativas) VALUES (:id, :codigo_questionario, :enunciado, :alternativas);
+            """, {
+                "id" : "q5",
+                "codigo_questionario" : "PEF_ICA_01",
+                "enunciado" : "Como você planeja a sua aposentadoria?",
+                "alternativas" : json.dumps([
+                    {"id" : "a",
+                        "text": "Contribuo ou não para um Sistema de Proteção Social e tenho planos alternativos por meio de investimentos em geral;",
+                        "points": 10,
+                    },
+                    {"id" : "b",
+                        "text": "Contribuo ou não para um Sistema de Proteção Social, mas não consigo poupar adequadamente para realizar planos alternativos nesse sentido;",
+                        "points": 5,
+                    },
+                    {"id" : "c",
+                        "text": "Contribuo ou não para um Sistema de Proteção Social e não tenho ideia alguma de como realizar planos alternativos nesse sentido.",
+                        "points": 0,
+                    },
+                ]),
+            })
 
-        # q5
-        db_execute(db_name, """
-            INSERT INTO questao (id, codigo_questionario, enunciado, alternativas) VALUES (:id, :codigo_questionario, :enunciado, :alternativas);
-        """, {
-            "id" : "q5",
-            "codigo_questionario" : "PEF_ICA_01",
-            "enunciado" : "Como você planeja a sua aposentadoria?",
-            "alternativas" : json.dumps([
-                {"id" : "a",
-                    "text": "Contribuo ou não para um Sistema de Proteção Social e tenho planos alternativos por meio de investimentos em geral;",
-                    "points": 10,
-                },
-                {"id" : "b",
-                    "text": "Contribuo ou não para um Sistema de Proteção Social, mas não consigo poupar adequadamente para realizar planos alternativos nesse sentido;",
-                    "points": 5,
-                },
-                {"id" : "c",
-                    "text": "Contribuo ou não para um Sistema de Proteção Social e não tenho ideia alguma de como realizar planos alternativos nesse sentido.",
-                    "points": 0,
-                },
-            ]),
-        })
+            # q6
+            db_execute(db_name, """
+                INSERT INTO questao (id, codigo_questionario, enunciado, alternativas) VALUES (:id, :codigo_questionario, :enunciado, :alternativas);
+            """, {
+                "id" : "q6",
+                "codigo_questionario" : "PEF_ICA_01",
+                "enunciado" : "O que você entende sobre ser Independente Financeiramente?",
+                "alternativas" : json.dumps([
+                    {"id" : "a",
+                        "text": "Que posso trabalhar por prazer e não por necessidade;",
+                        "points": 10,
+                    },
+                    {"id" : "b",
+                        "text": "Que posso ter dinheiro para viver bem o dia a dia;",
+                        "points": 5,
+                    },
+                    {"id" : "c",
+                        "text": "Que posso aproveitar a vida intensamente e não pensar no futuro.",
+                        "points": 0,
+                    },
+                ]),
+            })
 
-        # q6
-        db_execute(db_name, """
-            INSERT INTO questao (id, codigo_questionario, enunciado, alternativas) VALUES (:id, :codigo_questionario, :enunciado, :alternativas);
-        """, {
-            "id" : "q6",
-            "codigo_questionario" : "PEF_ICA_01",
-            "enunciado" : "O que você entende sobre ser Independente Financeiramente?",
-            "alternativas" : json.dumps([
-                {"id" : "a",
-                    "text": "Que posso trabalhar por prazer e não por necessidade;",
-                    "points": 10,
-                },
-                {"id" : "b",
-                    "text": "Que posso ter dinheiro para viver bem o dia a dia;",
-                    "points": 5,
-                },
-                {"id" : "c",
-                    "text": "Que posso aproveitar a vida intensamente e não pensar no futuro.",
-                    "points": 0,
-                },
-            ]),
-        })
+            # q7
+            db_execute(db_name, """
+                INSERT INTO questao (id, codigo_questionario, enunciado, alternativas) VALUES (:id, :codigo_questionario, :enunciado, :alternativas);
+            """, {
+                "id" : "q7",
+                "codigo_questionario" : "PEF_ICA_01",
+                "enunciado" : "Você sabe quais são os seus sonhos e objetivos de curto, médio e longo prazo?",
+                "alternativas" : json.dumps([
+                    {"id" : "a",
+                        "text": "Sei quais são, quanto custam e por quanto tempo terei que guardar para realizá-los;",
+                        "points": 10,
+                    },
+                    {"id" : "b",
+                        "text": "Tenho muitos e sei quanto custam, mas não sei como realizá-los;",
+                        "points": 5,
+                    },
+                    {"id" : "c",
+                        "text": "Não tenho ou, se tenho, sempre acabo deixando-os para o futuro, porque não consigo guardar dinheiro para eles.",
+                        "points": 0,
+                    },
+                ]),
+            })
 
-        # q7
-        db_execute(db_name, """
-            INSERT INTO questao (id, codigo_questionario, enunciado, alternativas) VALUES (:id, :codigo_questionario, :enunciado, :alternativas);
-        """, {
-            "id" : "q7",
-            "codigo_questionario" : "PEF_ICA_01",
-            "enunciado" : "Você sabe quais são os seus sonhos e objetivos de curto, médio e longo prazo?",
-            "alternativas" : json.dumps([
-                {"id" : "a",
-                    "text": "Sei quais são, quanto custam e por quanto tempo terei que guardar para realizá-los;",
-                    "points": 10,
-                },
-                {"id" : "b",
-                    "text": "Tenho muitos e sei quanto custam, mas não sei como realizá-los;",
-                    "points": 5,
-                },
-                {"id" : "c",
-                    "text": "Não tenho ou, se tenho, sempre acabo deixando-os para o futuro, porque não consigo guardar dinheiro para eles.",
-                    "points": 0,
-                },
-            ]),
-        })
+            # q8
+            db_execute(db_name, """
+                INSERT INTO questao (id, codigo_questionario, enunciado, alternativas) VALUES (:id, :codigo_questionario, :enunciado, :alternativas);
+            """, {
+                "id" : "q8",
+                "codigo_questionario" : "PEF_ICA_01",
+                "enunciado" : "Se um imprevisto alterasse a sua situação financeira, qual seria a sua reação?",
+                "alternativas" : json.dumps([
+                    {"id" : "a",
+                        "text": "Faria um bom diagnóstico financeiro, registrando o que ganho e o que gasto, além dos meus investimentos e dívidas, se os tiverem;",
+                        "points": 10,
+                    },
+                    {"id" : "b",
+                        "text": "Cortaria despesas e gastos desnecessários;",
+                        "points": 5,
+                    },
+                    {"id" : "c",
+                        "text": "Não saberia por onde começar e teria medo de encarar a minha verdadeira situação financeira.",
+                        "points": 0,
+                    },
+                ]),
+            })
 
-        # q8
-        db_execute(db_name, """
-            INSERT INTO questao (id, codigo_questionario, enunciado, alternativas) VALUES (:id, :codigo_questionario, :enunciado, :alternativas);
-        """, {
-            "id" : "q8",
-            "codigo_questionario" : "PEF_ICA_01",
-            "enunciado" : "Se um imprevisto alterasse a sua situação financeira, qual seria a sua reação?",
-            "alternativas" : json.dumps([
-                {"id" : "a",
-                    "text": "Faria um bom diagnóstico financeiro, registrando o que ganho e o que gasto, além dos meus investimentos e dívidas, se os tiverem;",
-                    "points": 10,
-                },
-                {"id" : "b",
-                    "text": "Cortaria despesas e gastos desnecessários;",
-                    "points": 5,
-                },
-                {"id" : "c",
-                    "text": "Não saberia por onde começar e teria medo de encarar a minha verdadeira situação financeira.",
-                    "points": 0,
-                },
-            ]),
-        })
+            # q9
+            db_execute(db_name, """
+                INSERT INTO questao (id, codigo_questionario, enunciado, alternativas) VALUES (:id, :codigo_questionario, :enunciado, :alternativas);
+            """, {
+                "id" : "q9",
+                "codigo_questionario" : "PEF_ICA_01",
+                "enunciado" : "Se a partir de hoje você não recebesse mais a sua renda mensal, por quanto tempo você conseguiria manter seu atual padrão de vida?",
+                "alternativas" : json.dumps([
+                    {"id" : "a",
+                        "text": "Conseguiria fazer tudo que faço por 5, 10 ou mais anos;",
+                        "points": 10,
+                    },
+                    {"id" : "b",
+                        "text": "Manteria meu padrão de vida por 1 a, no máximo, 4 anos;",
+                        "points": 5,
+                    },
+                    {"id" : "c",
+                        "text": "Não conseguiria me manter nem por alguns meses.",
+                        "points": 0,
+                    },
+                ]),
+            })
 
-        # q9
-        db_execute(db_name, """
-            INSERT INTO questao (id, codigo_questionario, enunciado, alternativas) VALUES (:id, :codigo_questionario, :enunciado, :alternativas);
-        """, {
-            "id" : "q9",
-            "codigo_questionario" : "PEF_ICA_01",
-            "enunciado" : "Se a partir de hoje você não recebesse mais a sua renda mensal, por quanto tempo você conseguiria manter seu atual padrão de vida?",
-            "alternativas" : json.dumps([
-                {"id" : "a",
-                    "text": "Conseguiria fazer tudo que faço por 5, 10 ou mais anos;",
-                    "points": 10,
-                },
-                {"id" : "b",
-                    "text": "Manteria meu padrão de vida por 1 a, no máximo, 4 anos;",
-                    "points": 5,
-                },
-                {"id" : "c",
-                    "text": "Não conseguiria me manter nem por alguns meses.",
-                    "points": 0,
-                },
-            ]),
-        })
+            # q10
+            db_execute(db_name, """
+                INSERT INTO questao (id, codigo_questionario, enunciado, alternativas) VALUES (:id, :codigo_questionario, :enunciado, :alternativas);
+            """, {
+                "id" : "q10",
+                "codigo_questionario" : "PEF_ICA_01",
+                "enunciado" : "Quando você decide comprar um produto, qual é a sua atitude?",
+                "alternativas" : json.dumps([
+                    {"id" : "a",
+                        "text": "Planejo uma forma de investimento para comprar à vista e com desconto;",
+                        "points": 10,
+                    },
+                    {"id" : "b",
+                        "text": "Parcelo dentro do meu orçamento;",
+                        "points": 5,
+                    },
+                    {"id" : "c",
+                        "text": "Compro e depois me preocupo como vou pagar.",
+                        "points": 0,
+                    },
+                ]),
+            })
 
-        # q10
-        db_execute(db_name, """
-            INSERT INTO questao (id, codigo_questionario, enunciado, alternativas) VALUES (:id, :codigo_questionario, :enunciado, :alternativas);
-        """, {
-            "id" : "q10",
-            "codigo_questionario" : "PEF_ICA_01",
-            "enunciado" : "Quando você decide comprar um produto, qual é a sua atitude?",
-            "alternativas" : json.dumps([
-                {"id" : "a",
-                    "text": "Planejo uma forma de investimento para comprar à vista e com desconto;",
-                    "points": 10,
-                },
-                {"id" : "b",
-                    "text": "Parcelo dentro do meu orçamento;",
-                    "points": 5,
-                },
-                {"id" : "c",
-                    "text": "Compro e depois me preocupo como vou pagar.",
-                    "points": 0,
-                },
-            ]),
-        })
+            return {"msg":"PEF_ICA_01 done!"}
+        except Exception as e:
+            raise e
+
 
     return app
 
