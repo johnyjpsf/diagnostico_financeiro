@@ -227,7 +227,7 @@ def create_app():
     def api_load_quest(quest):
         functions = locals()
         try:
-            functions["load" + quest.lower()]()
+            functions["load_" + quest.lower()]()
             return jsonify({"msg": quest + " done!"})
         except Exception as e:
             return jsonify({"msg":"error!", "exception":str(e)})
